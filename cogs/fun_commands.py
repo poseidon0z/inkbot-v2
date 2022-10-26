@@ -44,7 +44,13 @@ class FunCommands(commands.Cog):
         if channel is None:
             await interaction.response.send_message(message)
         else:
-            await channel.send(message)
+            if channel.permissions_for(interaction.user).send_messages:
+                await channel.send(message)
+                await interaction.response.send_message(f'Message has been sent in {channel.mention}', delete_after=5)
+            else:
+                await interaction.response.send_message(
+                    f'Don\'t try making me say stuff in channels where you don\'t have perms '
+                    f'<:lolnub:842673428695744522>')
 
 
 # setup for the cog

@@ -21,6 +21,7 @@ class BotUtil(commands.Cog):
         print(f"{__class__.__name__} ready")
 
     @commands.command(name="sync")
+    @commands.is_owner()
     async def sync(self, ctx) -> None:
         """Globally syncs all slash commands"""
         print("Commands syncing")
