@@ -8,6 +8,8 @@ from json import load
 import random
 import typing
 
+from utils.checks import not_banned_slash
+
 with Path("utils/var_storage.json").open() as f:
     vars_json = load(f)
 pickup_lines = vars_json["pickup_list"]
@@ -15,7 +17,7 @@ eightball_replies = vars_json["eightball_list"]
 
 with Path("utils/design.json").open() as f:
     design = load(f)
-base_color = int(design["embed"]["base_color"],base=16)
+base_color = int(design["embed"]["base_color"], base=16)
 
 
 class FunCommands(commands.Cog):
@@ -28,6 +30,7 @@ class FunCommands(commands.Cog):
         print(f"{__class__.__name__} ready")
 
     @app_commands.command(name="say")
+    @not_banned_slash()
     async def say(self,
                   interaction: discord.Interaction,
                   message: str,
@@ -47,17 +50,18 @@ class FunCommands(commands.Cog):
             (Defaults to the channel that the interaction was called in)"""
 
         if channel is None:
-            await interaction.response.send_message(message)
-        else:
-            if channel.permissions_for(interaction.user).send_messages:
-                await channel.send(message)
-                await interaction.response.send_message(f'Message has been sent in {channel.mention}', delete_after=5)
-            else:
-                await interaction.response.send_message(
-                    f'Don\'t try making me say stuff in channels where you don\'t have perms '
-                    f'<:lolnub:842673428695744522>')
+            channel = interaction.channel
+
+        if channel.permissions_for(interaction.user).send_messages:
+            await interaction.response.send_message("Don't try making me say stuff in channels where you don't have "
+                                                    "perms <:lolnub:842673428695744522>")
+            return
+
+        await channel.send(message)
+        await interaction.response.send_message(f'Message has been sent in {channel.mention}', delete_after=5)
 
     @app_commands.command(name="iq")
+    @not_banned_slash()
     async def iq(self,
                  interaction: discord.Interaction,
                  target: typing.Optional[discord.User] = None):
@@ -76,10 +80,10 @@ class FunCommands(commands.Cog):
         if target is None:
             target = interaction.user
 
-        if target.id == 652756616185380894:  # rigging it for myself by making my iq always 160
+        iq = random.randint(a=40, b=160)
+
+        if target.id == 652756616185380894:  # rigging it for myself
             iq = 160
-        else:  # the actual function
-            iq = random.randint(a=40, b=160)
 
         # setting an emote to be displayed in embed according to iq
         if iq >= 116:
@@ -95,6 +99,6 @@ class FunCommands(commands.Cog):
         await interaction.response.send_message(embed=iq_embed)
 
 
-# setup for the cog
+# set up the cog
 async def setup(bot):
     await bot.add_cog(FunCommands(bot))

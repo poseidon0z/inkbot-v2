@@ -32,14 +32,14 @@ client = commands.Bot(command_prefix="ink2 ", intents=intents,
 
 @client.event
 async def on_ready():
+    """Runs when the bot has successfully started"""
     print(f"Bot is online on account {client.user} ({client.user.id})")
-    channel = client.get_channel(838425596421079060)
-    await channel.send(f"{client.user} ({client.user.id}) is now active!")
+    # channel = client.get_channel(838425596421079060)
+    # await channel.send(f"{client.user} ({client.user.id}) is now active!")
 
 
 async def cog_loader() -> None:
-    """Loads all the cogs stored in /cogs
-    """
+    """Loads all the cogs stored in /cogs"""
     for file in os.listdir('./cogs'):
         if file.endswith('.py'):
             await client.load_extension(f"cogs.{file[:-3]}")
@@ -48,6 +48,7 @@ async def cog_loader() -> None:
 
 
 async def main():
+    """Load all cogs and start the bot"""
     await cog_loader()
     await client.start(token)
 
