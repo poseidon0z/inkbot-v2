@@ -20,14 +20,21 @@ with Path("info.json").open() as f:
 token = config["token"]
 app_id = config["app_id"]
 
+# removing need for underscores in using jsk
+os.environ['JISHAKU_NO_UNDERSCORE'] = 'true'
 
-client = commands.Bot(command_prefix="ink ", intents=intents,
+# make traceback appear in same channel as sent message
+os.environ['JISHAKU_NO_DM_TRACEBACK'] = 'True'
+
+client = commands.Bot(command_prefix="ink2 ", intents=intents,
                       allowed_mentions=allowed_mentions, application_id=app_id)
 
 
 @client.event
 async def on_ready():
     print(f"Bot is online on account {client.user} ({client.user.id})")
+    channel = client.get_channel(838425596421079060)
+    await channel.send(f"{client.user} ({client.user.id}) is now active!")
 
 
 async def cog_loader() -> None:
@@ -36,6 +43,8 @@ async def cog_loader() -> None:
     for file in os.listdir('./cogs'):
         if file.endswith('.py'):
             await client.load_extension(f"cogs.{file[:-3]}")
+
+    await client.load_extension("jishaku")
 
 
 async def main():
