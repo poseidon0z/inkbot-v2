@@ -10,7 +10,7 @@ import typing
 
 from utils.checks import not_banned_slash
 
-with Path("utils/var_storage.json").open() as f:
+with Path("utils/var_storage.json").open(encoding="utf8") as f:
     vars_json = load(f)
 pickup_lines = vars_json["pickup_list"]
 eightball_replies = vars_json["eightball_list"]
