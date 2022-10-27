@@ -50,15 +50,15 @@ class FunCommands(commands.Cog):
             (Defaults to the channel that the interaction was called in)"""
 
         if channel is None:
-            channel = interaction.channel
+            await interaction.response.send_message(message)
+            return
 
-        if channel.permissions_for(interaction.user).send_messages:
+        if not channel.permissions_for(interaction.user).send_messages:
             await interaction.response.send_message("Don't try making me say stuff in channels where you don't have "
                                                     "perms <:lolnub:842673428695744522>")
             return
-
+        await interaction.response.send_message(f"Sending the message in {channel.mention}")
         await channel.send(message)
-        await interaction.response.send_message(f'Message has been sent in {channel.mention}', delete_after=5)
 
     @app_commands.command(name="iq")
     @not_banned_slash()
