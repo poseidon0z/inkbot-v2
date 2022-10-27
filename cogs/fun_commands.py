@@ -104,14 +104,14 @@ class FunCommands(commands.Cog):
     async def describe(self, interaction: discord.Interaction, target: typing.Optional[discord.User] = None) -> None:
         """Describe a user (describe user calling the command if no one specified)
 
-                Parameters
-                ---------
+        Parameters
+        ---------
 
-                interaction: `discord.Interaction`
-                    The interaction that's calling the command
-                target: `discord.User`
-                    The user to describe
-                    (Defaults to command invoker)"""
+        interaction: `discord.Interaction`
+            The interaction that's calling the command
+        target: `discord.User`
+            The user to describe
+            (Defaults to command invoker)"""
         if target is None:
             target = interaction.user
 
@@ -122,6 +122,53 @@ class FunCommands(commands.Cog):
 
         await interaction.response.send_message(f"{target.mention} is {description}!",
                                                 allowed_mentions=discord.AllowedMentions.none())
+
+    @app_commands.command(name="besmooth")
+    @not_banned_slash()
+    async def be_smooth(self, interaction: discord.Interaction):
+        """Use a random pickup line
+
+        Parameters
+        ----------
+
+        interaction: `discord.Interaction`
+            The interaction that's calling the command
+        """
+        message = random.choice(pickup_lines)
+        await interaction.response.send_message(message)
+
+    @app_commands.command(name="8ball")
+    @not_banned_slash()
+    async def eight_ball(self, interaction: discord.Interaction, question: str):
+        """Ask any question to the magic 8 ball
+
+        Parameters
+        ---------
+
+        interaction: `discord.Interaction`
+            The interaction that's calling the command
+        question: `str`
+            What to ask the magic 8-ball
+        """
+        ball_response = random.choice(eightball_replies)
+        await interaction.response.send_message(f":crystal_ball:{ball_response}, {interaction.user.mention}")
+
+    @app_commands.command(name="choose")
+    @not_banned_slash()
+    async def choose(self, interaction: discord.Interaction, choices: str):
+        """Ask any question to the magic 8 ball
+
+        Parameters
+        ---------
+
+        interaction: `discord.Interaction`
+            The interaction that's calling the command
+        choices: `str`
+            Choices among which to choose one, separated bt commas
+        """
+        choices_list = choices.split(",")
+        choice = random.choice(choices_list)
+        await interaction.response.send_message(f"Out of {choices}, \nI choose {choice}")
 
 
 # set up the cog
