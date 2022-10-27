@@ -14,6 +14,7 @@ with Path("utils/var_storage.json").open() as f:
     vars_json = load(f)
 pickup_lines = vars_json["pickup_list"]
 eightball_replies = vars_json["eightball_list"]
+descriptions = vars_json["description_list"]
 
 with Path("utils/design.json").open() as f:
     design = load(f)
@@ -97,6 +98,30 @@ class FunCommands(commands.Cog):
                                  description=f'{target.mention} has an iq of {iq} {emote}',
                                  color=base_color)
         await interaction.response.send_message(embed=iq_embed)
+
+    @app_commands.command(name="describe")
+    @not_banned_slash()
+    async def describe(self, interaction: discord.Interaction, target: typing.Optional[discord.User] = None) -> None:
+        """Describe a user (describe user calling the command if no one specified)
+
+                Parameters
+                ---------
+
+                interaction: `discord.Interaction`
+                    The interaction that's calling the command
+                target: `discord.User`
+                    The user to describe
+                    (Defaults to command invoker)"""
+        if target is None:
+            target = interaction.user
+
+        description = random.choice(descriptions)
+
+        if target.id == 652756616185380894:
+            description = "amazing"
+
+        await interaction.response.send_message(f"{target.mention} is {description}!",
+                                                allowed_mentions=discord.AllowedMentions.none())
 
 
 # set up the cog
