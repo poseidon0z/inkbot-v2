@@ -25,9 +25,8 @@ class FunCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener("on_ready")
-    async def funcommands_ready(self) -> None:
-        """Sign to show that the cog has loaded successfully"""
+    async def cog_load(self) -> None:
+        """Show that the cog has loaded successfully"""
         print(f"{__class__.__name__} ready")
 
     @app_commands.command(name="say")

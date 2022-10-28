@@ -14,35 +14,29 @@ with Path("info.json").open() as f:
 client_code = info['mongo_client']
 mongo_client = pymongo.MongoClient(client_code)
 ban_location = mongo_client['bot_data']['banned_users']
+command_use_location = mongo_client['bot_data']['command_data']
 
 
 class BotUtil(commands.Cog):
-    """This cog consists of util commands for ink
-
-    Commands
-    --------
-
-    sync
-        Sync all slash commands globally
-
-    alive
-        Check if the bot is alive
-
-    ban
-        Ban users from the bot
-
-    unban
-        Unban users from the bot
-
-    """
+    """This cog consists of util commands for ink"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener("on_ready")
-    async def botutil_ready(self) -> None:
-        """Sign to show that the cog has loaded successfully"""
+    async def cog_load(self) -> None:
+        """Show that the cog has loaded successfully"""
         print(f"{__class__.__name__} ready")
+
+    @commands.Cog.listener("on_ready")
+    async def on_ready(self) -> None:
+        """Runs when the bot has successfully started"""
+        print(f"Bot is online on account {self.bot.user} ({self.bot.user.id})")
+        # channel = client.get_channel(838425596421079060)
+        # await channel.send(f"{self.bot.user} ({self.bot.user.id}) is now active!")
+
+    @commands.Cog.listener("on_app_command_completion")
+    async def slash_logger(self, interaction, command) -> None:
+        command_use_location.update_one({'user': interaction.user.id}, {'$inc': {command.name: 1}}, upsert=True)
 
     @commands.command(name="sync")
     @commands.is_owner()
